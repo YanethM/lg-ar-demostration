@@ -1,4 +1,4 @@
-// src/components/ARDemo.js - Simulador AR para demostración
+// src/components/ARDemo.js - Simulador AR para demostración responsive
 import { useState, useEffect, useRef } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Text } from '@react-three/drei'
@@ -79,10 +79,10 @@ function ARIndicators() {
   }, [])
 
   const steps = [
-    "🎯 Detectando superficie...",
-    "✅ Superficie encontrada",
-    "👆 Toca para colocar TV",
-    "🎉 TV colocado en AR"
+    "Detectando superficie...",
+    "Superficie encontrada",
+    "Toca para colocar TV",
+    "TV colocado en AR"
   ]
 
   return (
@@ -98,64 +98,83 @@ function ARIndicators() {
   )
 }
 
-// Controles AR simulados
+// Controles AR simulados responsive
 function ARControls({ onPlaceObject, onScaleObject, isObjectPlaced }) {
+  const [isMobile, setIsMobile] = useState(false)
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth <= 768)
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
+
+  const containerStyle = {
+    position: 'absolute',
+    bottom: isMobile ? '15px' : '20px',
+    left: '50%',
+    transform: 'translateX(-50%)',
+    display: 'flex',
+    gap: isMobile ? '8px' : '10px',
+    zIndex: 1000,
+    flexDirection: isMobile ? 'column' : 'row',
+    alignItems: 'center'
+  }
+
+  const buttonStyle = {
+    background: 'linear-gradient(135deg, #4ecdc4, #44a08d)',
+    border: 'none',
+    borderRadius: isMobile ? '20px' : '25px',
+    color: 'white',
+    padding: isMobile ? '12px 24px' : '15px 30px',
+    fontSize: isMobile ? '14px' : '16px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    boxShadow: '0 4px 15px rgba(78, 205, 196, 0.4)',
+    touchAction: 'manipulation',
+    userSelect: 'none',
+    minHeight: isMobile ? '44px' : 'auto'
+  }
+
+  const secondaryButtonStyle = {
+    background: 'rgba(52, 73, 94, 0.9)',
+    border: 'none',
+    borderRadius: isMobile ? '15px' : '20px',
+    color: 'white',
+    padding: isMobile ? '8px 16px' : '10px 20px',
+    cursor: 'pointer',
+    fontSize: isMobile ? '12px' : '14px',
+    touchAction: 'manipulation',
+    userSelect: 'none',
+    minHeight: isMobile ? '40px' : 'auto'
+  }
+
   return (
-    <div style={{
-      position: 'absolute',
-      bottom: '20px',
-      left: '50%',
-      transform: 'translateX(-50%)',
-      display: 'flex',
-      gap: '10px',
-      zIndex: 1000
-    }}>
+    <div style={containerStyle}>
       {!isObjectPlaced ? (
-        <button
-          onClick={onPlaceObject}
-          style={{
-            background: 'linear-gradient(135deg, #4ecdc4, #44a08d)',
-            border: 'none',
-            borderRadius: '25px',
-            color: 'white',
-            padding: '15px 30px',
-            fontSize: '16px',
-            cursor: 'pointer',
-            fontWeight: 'bold',
-            boxShadow: '0 4px 15px rgba(78, 205, 196, 0.4)'
-          }}
-        >
+        <button onClick={onPlaceObject} style={buttonStyle}>
           👆 Colocar TV
         </button>
       ) : (
-        <>
+        <div style={{ 
+          display: 'flex', 
+          gap: isMobile ? '8px' : '10px',
+          flexDirection: isMobile ? 'row' : 'row',
+          justifyContent: 'center'
+        }}>
           <button
             onClick={() => onScaleObject(0.8)}
-            style={{
-              background: 'rgba(52, 73, 94, 0.9)',
-              border: 'none',
-              borderRadius: '20px',
-              color: 'white',
-              padding: '10px 20px',
-              cursor: 'pointer'
-            }}
+            style={secondaryButtonStyle}
           >
-            🔽 Más pequeño
+            🔽 {isMobile ? 'Menor' : 'Más pequeño'}
           </button>
           <button
             onClick={() => onScaleObject(1.2)}
-            style={{
-              background: 'rgba(52, 73, 94, 0.9)',
-              border: 'none',
-              borderRadius: '20px',
-              color: 'white',
-              padding: '10px 20px',
-              cursor: 'pointer'
-            }}
+            style={secondaryButtonStyle}
           >
-            🔼 Más grande
+            🔼 {isMobile ? 'Mayor' : 'Más grande'}
           </button>
-        </>
+        </div>
       )}
     </div>
   )

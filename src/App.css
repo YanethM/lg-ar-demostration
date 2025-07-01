@@ -16,6 +16,11 @@ html, body {
   -moz-osx-font-smoothing: grayscale;
   overflow: hidden;
   background: #000;
+  /* Mejorar rendimiento en móviles */
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  user-select: none;
 }
 
 /* Contenedor principal */
@@ -26,25 +31,22 @@ html, body {
   background: linear-gradient(135deg, #0c0c0c 0%, #1a1a1a 50%, #0c0c0c 100%);
 }
 
-/* Animación de rotación para el spinner */
+/* Animaciones optimizadas */
 @keyframes spin {
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
 
-/* Animación de flotación */
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
   50% { transform: translateY(-10px); }
 }
 
-/* Animación de pulso */
 @keyframes pulse {
   0%, 100% { transform: scale(1); opacity: 1; }
   50% { transform: scale(1.05); opacity: 0.8; }
 }
 
-/* Animación de desvanecimiento */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(20px); }
   to { opacity: 1; transform: translateY(0); }
@@ -55,17 +57,56 @@ html, body {
   to { opacity: 1; transform: translateX(0); }
 }
 
-/* Efectos de hover para botones */
-.hover-scale {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+/* Clases de utilidad responsive */
+.responsive-container {
+  max-width: 100%;
+  padding: 0 15px;
 }
 
-.hover-scale:hover {
-  transform: scale(1.05);
-  box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+.flex-responsive {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
-/* Efectos de glassmorphism */
+.grid-responsive {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+/* Touch targets optimizados */
+.touch-target {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 8px;
+  touch-action: manipulation;
+  user-select: none;
+}
+
+/* Efectos de hover solo en dispositivos que lo soporten */
+@media (hover: hover) {
+  .hover-scale {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+  }
+
+  .hover-scale:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+  }
+
+  .interactive-element {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
+  }
+
+  .interactive-element:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+  }
+}
+
+/* Efectos de glassmorphism responsive */
 .glass-effect {
   background: rgba(255, 255, 255, 0.1);
   backdrop-filter: blur(10px);
@@ -74,139 +115,31 @@ html, body {
 }
 
 .glass-dark {
-  background: rgba(0, 0, 0, 0.7);
+  background: rgba(0, 0, 0, 0.8);
   backdrop-filter: blur(15px);
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Estilo para scrollbars personalizados */
+/* Scrollbars personalizados */
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
   background: rgba(255, 255, 255, 0.1);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb {
   background: rgba(78, 205, 196, 0.6);
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: rgba(78, 205, 196, 0.8);
 }
 
-/* Efectos de texto */
-.gradient-text {
-  background: linear-gradient(45deg, #4ecdc4, #44a08d);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-}
-
-.glow-text {
-  text-shadow: 0 0 10px rgba(78, 205, 196, 0.5);
-}
-
-/* Utilidades de animación */
-.animate-fade-in {
-  animation: fadeIn 0.6s ease-out;
-}
-
-.animate-slide-in {
-  animation: fadeInSlide 0.6s ease-out;
-}
-
-.animate-float {
-  animation: float 3s ease-in-out infinite;
-}
-
-.animate-pulse {
-  animation: pulse 2s ease-in-out infinite;
-}
-
-/* Responsividad */
-@media (max-width: 768px) {
-  /* Ajustes para móviles */
-  .mobile-hidden {
-    display: none;
-  }
-  
-  /* Reducir padding en paneles para móvil */
-  .glass-effect, .glass-dark {
-    padding: 10px !important;
-    margin: 10px !important;
-    max-width: calc(100vw - 40px) !important;
-  }
-}
-
-@media (max-width: 480px) {
-  /* Ajustes para pantallas muy pequeñas */
-  .mobile-stack {
-    flex-direction: column !important;
-  }
-  
-  .mobile-full-width {
-    width: 100% !important;
-  }
-}
-
-/* Estilos para modo pantalla completa */
-.fullscreen-mode {
-  position: fixed !important;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100vw !important;
-  height: 100vh !important;
-  z-index: 9999 !important;
-}
-
-/* Efectos de hover mejorados */
-.interactive-element {
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  cursor: pointer;
-}
-
-.interactive-element:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.4);
-}
-
-/* Indicadores de estado */
-.status-indicator {
-  position: relative;
-}
-
-.status-indicator::before {
-  content: '';
-  position: absolute;
-  top: -2px;
-  right: -2px;
-  width: 8px;
-  height: 8px;
-  background: #4ecdc4;
-  border-radius: 50%;
-  animation: pulse 2s infinite;
-}
-
-.status-indicator.offline::before {
-  background: #e74c3c;
-}
-
-/* Efectos de partículas de fondo */
-.particles-bg {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
-  z-index: -1;
-}
-
-/* Botones estilizados */
+/* Botones optimizados */
 .btn-primary {
   background: linear-gradient(135deg, #4ecdc4, #44a08d);
   border: none;
@@ -217,11 +150,8 @@ html, body {
   cursor: pointer;
   transition: all 0.3s ease;
   box-shadow: 0 4px 15px rgba(78, 205, 196, 0.3);
-}
-
-.btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(78, 205, 196, 0.4);
+  touch-action: manipulation;
+  user-select: none;
 }
 
 .btn-secondary {
@@ -233,47 +163,131 @@ html, body {
   cursor: pointer;
   transition: all 0.3s ease;
   backdrop-filter: blur(10px);
+  touch-action: manipulation;
+  user-select: none;
 }
 
-.btn-secondary:hover {
-  background: rgba(255, 255, 255, 0.2);
-  border-color: rgba(255, 255, 255, 0.3);
+/* Estados de accesibilidad */
+button:focus,
+input:focus,
+select:focus,
+textarea:focus {
+  outline: 2px solid #4ecdc4;
+  outline-offset: 2px;
 }
 
-/* Tooltips */
-.tooltip {
-  position: relative;
-  cursor: help;
+/* Responsive breakpoints */
+
+/* Smartphones pequeños (portrait) */
+@media screen and (max-width: 480px) {
+  .mobile-hidden {
+    display: none !important;
+  }
+  
+  .mobile-full-width {
+    width: 100% !important;
+    max-width: none !important;
+  }
+  
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+  
+  .mobile-center {
+    text-align: center !important;
+  }
+  
+  /* Reducir espaciado en móvil */
+  .glass-effect, .glass-dark {
+    padding: 10px !important;
+    margin: 8px !important;
+    border-radius: 10px !important;
+  }
+  
+  /* Textos más pequeños */
+  .mobile-text-small {
+    font-size: 12px !important;
+  }
+  
+  .mobile-text-smaller {
+    font-size: 10px !important;
+  }
+  
+  /* Botones más grandes para touch */
+  .btn-primary, .btn-secondary {
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+    min-height: 44px !important;
+  }
 }
 
-.tooltip::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  background: rgba(0, 0, 0, 0.9);
-  color: white;
-  padding: 8px 12px;
-  border-radius: 6px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s ease;
-  z-index: 1000;
+/* Smartphones (landscape) y tablets pequeñas */
+@media screen and (max-width: 768px) {
+  .tablet-hidden {
+    display: none !important;
+  }
+  
+  .tablet-stack {
+    flex-direction: column !important;
+  }
+  
+  .tablet-center {
+    text-align: center !important;
+  }
+  
+  /* Ajustar grid para tablets */
+  .grid-responsive {
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 12px;
+  }
+  
+  /* Reducir efectos en dispositivos menos potentes */
+  .glass-effect, .glass-dark {
+    backdrop-filter: blur(8px);
+  }
 }
 
-.tooltip:hover::after {
-  opacity: 1;
+/* Tablets grandes */
+@media screen and (max-width: 1024px) {
+  .desktop-only {
+    display: none !important;
+  }
+  
+  .grid-responsive {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
 }
 
-/* Mejoras de accesibilidad */
+/* Pantallas grandes */
+@media screen and (min-width: 1200px) {
+  .responsive-container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+}
+
+/* Orientación landscape específica para móviles */
+@media screen and (max-height: 500px) and (orientation: landscape) {
+  .landscape-adjust {
+    font-size: 12px !important;
+    padding: 6px 12px !important;
+  }
+  
+  .landscape-hidden {
+    display: none !important;
+  }
+}
+
+/* Preferencias de movimiento reducido */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+  
+  .hover-scale:hover {
+    transform: none !important;
   }
 }
 
@@ -286,7 +300,13 @@ html, body {
   
   .gradient-text {
     -webkit-text-fill-color: #4ecdc4 !important;
+    color: #4ecdc4 !important;
   }
+}
+
+/* Dark mode específico */
+@media (prefers-color-scheme: dark) {
+  /* Ya estamos en dark mode por defecto */
 }
 
 /* Optimizaciones de rendimiento */
@@ -295,7 +315,11 @@ html, body {
   will-change: transform;
 }
 
-/* Estados de carga */
+.optimize-rendering {
+  contain: layout style paint;
+}
+
+/* Estados de carga responsive */
 .loading-state {
   pointer-events: none;
   opacity: 0.6;
@@ -312,16 +336,57 @@ html, body {
   animation: spin 1s linear infinite;
 }
 
-/* Efectos de foco para accesibilidad */
-button:focus,
-input:focus,
-select:focus,
-textarea:focus {
-  outline: 2px solid #4ecdc4;
-  outline-offset: 2px;
+/* Responsive para Canvas 3D */
+.canvas-container {
+  width: 100%;
+  height: 100%;
+  touch-action: none; /* Importante para controles 3D en móvil */
 }
 
-/* Estilos para impresión */
+/* Tooltips responsive */
+.tooltip {
+  position: relative;
+  cursor: help;
+}
+
+@media screen and (min-width: 769px) {
+  .tooltip::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 12px;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+    z-index: 1000;
+  }
+
+  .tooltip:hover::after {
+    opacity: 1;
+  }
+}
+
+/* Utilidades finales */
+.text-responsive {
+  font-size: clamp(0.8rem, 2vw, 1.2rem);
+}
+
+.padding-responsive {
+  padding: clamp(0.5rem, 2vw, 1.5rem);
+}
+
+.margin-responsive {
+  margin: clamp(0.25rem, 1vw, 1rem);
+}
+
+/* Para impresión */
 @media print {
   .no-print {
     display: none !important;
@@ -330,5 +395,48 @@ textarea:focus {
   body {
     background: white !important;
     color: black !important;
+  }
+  
+  .glass-effect, .glass-dark {
+    background: white !important;
+    border: 1px solid black !important;
+  }
+}
+
+.logo-container {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 1500; /* Más alto que otros elementos del ProductViewer */
+  background: rgba(0, 0, 0, 0.1); /* Fondo sutil opcional */
+  border-radius: 10px;
+  padding: 10px;
+  backdrop-filter: blur(5px); /* Efecto de difuminado */
+  transition: all 0.3s ease;
+}
+
+/* Estilos del logo */
+.logo {
+  height: 40px; /* Ajusta según necesites */
+  width: auto;
+  filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.3));
+  transition: transform 0.2s ease;
+}
+
+/* Efecto hover para el logo */
+.logo:hover {
+  transform: scale(1.05);
+}
+
+/* Responsivo para móviles */
+@media (max-width: 768px) {
+  .logo-container {
+    top: 10px;
+    left: 10px;
+    padding: 8px;
+  }
+  
+  .logo {
+    height: 30px; /* Más pequeño en móvil */
   }
 }
