@@ -3,6 +3,8 @@ import { useState, useEffect, Suspense, useRef } from 'react'
 import { Canvas } from '@react-three/fiber'
 import ProductSelector from './ProductSelector'
 import Scene3D from './Scene3D'
+import ARViewer from './ARViewer' // Nuevo import AR
+import ARDemo from './ARDemo' // Nuevo import Demo AR
 import { lgProducts } from '../data/products'
 
 // Componente de estadísticas y información
@@ -162,9 +164,9 @@ function InfoPanel({ selectedProduct, viewMode, onViewModeChange }) {
             fontSize: '11px',
             color: '#95a5a6'
           }}>
-            <div>{lgProducts.length} modelos disponibles</div>
-            <div>Desde ${Math.min(...lgProducts.map(p => p.price)).toLocaleString()}</div>
-            <div>Hasta ${Math.max(...lgProducts.map(p => p.price)).toLocaleString()}</div>
+            <div>📺 {lgProducts.length} modelos disponibles</div>
+            <div>💰 Desde ${Math.min(...lgProducts.map(p => p.price)).toLocaleString()}</div>
+            <div>🏆 Hasta ${Math.max(...lgProducts.map(p => p.price)).toLocaleString()}</div>
           </div>
         </>
       )}
@@ -172,8 +174,8 @@ function InfoPanel({ selectedProduct, viewMode, onViewModeChange }) {
   )
 }
 
-// Controles de vista
-function ViewControls({ viewMode, onViewModeChange, onScreenshot, onFullscreen }) {
+// Controles de vista con AR
+function ViewControls({ viewMode, onViewModeChange, onScreenshot, onFullscreen, onARMode, onARDemo, showARButton }) {
   return (
     <div style={{
       position: 'absolute',
@@ -181,51 +183,103 @@ function ViewControls({ viewMode, onViewModeChange, onScreenshot, onFullscreen }
       right: '20px',
       zIndex: 1000,
       display: 'flex',
-      gap: '10px'
+      gap: '10px',
+      flexDirection: 'column'
     }}>
-      {/* Botón de captura */}
-      <button
-        onClick={onScreenshot}
-        style={{
-          background: 'rgba(78, 205, 196, 0.9)',
-          border: 'none',
-          borderRadius: '50%',
-          width: '50px',
-          height: '50px',
-          color: 'white',
-          fontSize: '18px',
-          cursor: 'pointer',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-          transition: 'all 0.2s ease'
-        }}
-        onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
-        onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-        title="Capturar pantalla"
-      >
-        📸
-      </button>
+      {/* Botones AR */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        {/* Demo AR - Siempre disponible */}
+        <button
+          onClick={onARDemo}
+          style={{
+            background: 'linear-gradient(135deg, #9b59b6, #8e44ad)',
+            border: 'none',
+            borderRadius: '50%',
+            width: '60px',
+            height: '60px',
+            color: 'white',
+            fontSize: '20px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(155, 89, 182, 0.4)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+          onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+          title="Demo AR (Funciona en cualquier dispositivo)"
+        >
+          🎭
+        </button>
+        
+        {/* AR Real - Solo en móviles HTTPS */}
+        {showARButton && (
+          <button
+            onClick={onARMode}
+            style={{
+              background: 'linear-gradient(135deg, #e74c3c, #c0392b)',
+              border: 'none',
+              borderRadius: '50%',
+              width: '60px',
+              height: '60px',
+              color: 'white',
+              fontSize: '20px',
+              cursor: 'pointer',
+              boxShadow: '0 4px 15px rgba(231, 76, 60, 0.4)',
+              transition: 'all 0.2s ease'
+            }}
+            onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+            onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+            title="AR Real"
+          >
+            🥽
+          </button>
+        )}
+      </div>
       
-      {/* Botón de pantalla completa */}
-      <button
-        onClick={onFullscreen}
-        style={{
-          background: 'rgba(52, 73, 94, 0.9)',
-          border: 'none',
-          borderRadius: '50%',
-          width: '50px',
-          height: '50px',
-          color: 'white',
-          fontSize: '18px',
-          cursor: 'pointer',
-          boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-          transition: 'all 0.2s ease'
-        }}
-        onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
-        onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
-        title="Pantalla completa"
-      >
-        ⛶
-      </button>
+      <div style={{ display: 'flex', gap: '10px' }}>
+        {/* Botón de captura */}
+        <button
+          onClick={onScreenshot}
+          style={{
+            background: 'rgba(78, 205, 196, 0.9)',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            color: 'white',
+            fontSize: '18px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+          onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+          title="Capturar pantalla"
+        >
+          📸
+        </button>
+        
+        {/* Botón de pantalla completa */}
+        <button
+          onClick={onFullscreen}
+          style={{
+            background: 'rgba(52, 73, 94, 0.9)',
+            border: 'none',
+            borderRadius: '50%',
+            width: '50px',
+            height: '50px',
+            color: 'white',
+            fontSize: '18px',
+            cursor: 'pointer',
+            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseOver={(e) => e.target.style.transform = 'scale(1.1)'}
+          onMouseOut={(e) => e.target.style.transform = 'scale(1)'}
+          title="Pantalla completa"
+        >
+          ⛶
+        </button>
+      </div>
     </div>
   )
 }
@@ -271,7 +325,18 @@ export default function ProductViewer() {
   const [viewMode, setViewMode] = useState('Normal')
   const [isLoading, setIsLoading] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false)
+  const [isARMode, setIsARMode] = useState(false) // Nuevo estado AR
+  const [isARDemo, setIsARDemo] = useState(false) // Nuevo estado Demo AR
   const canvasRef = useRef()
+
+  // Detectar si está en HTTPS y es móvil para mostrar botón AR
+  const [showARButton, setShowARButton] = useState(false)
+  
+  useEffect(() => {
+    const isHTTPS = window.location.protocol === 'https:'
+    const isMobile = /Android|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)
+    setShowARButton(isHTTPS && isMobile)
+  }, [])
 
   // Manejar cambio de producto
   const handleProductSelect = (product) => {
@@ -302,6 +367,26 @@ export default function ProductViewer() {
       document.exitFullscreen()
       setIsFullscreen(false)
     }
+  }
+
+  // Cambiar a modo AR
+  const handleARMode = () => {
+    setIsARMode(true)
+  }
+
+  // Cambiar a modo Demo AR
+  const handleARDemo = () => {
+    setIsARDemo(true)
+  }
+
+  // Salir del modo AR
+  const handleExitAR = () => {
+    setIsARMode(false)
+  }
+
+  // Salir del modo Demo AR
+  const handleExitARDemo = () => {
+    setIsARDemo(false)
   }
 
   // Efectos de teclado
@@ -347,74 +432,105 @@ export default function ProductViewer() {
       {/* Indicador de carga */}
       <LoadingOverlay isLoading={isLoading} />
       
-      {/* Selector de productos */}
-      <ProductSelector 
-        products={lgProducts}
-        selectedProduct={selectedProduct}
-        onProductSelect={handleProductSelect}
-        position="top-left"
-      />
+      {/* Selector de productos - Ocultar en modo AR */}
+      {!isARMode && (
+        <ProductSelector 
+          products={lgProducts}
+          selectedProduct={selectedProduct}
+          onProductSelect={handleProductSelect}
+          position="top-left"
+        />
+      )}
       
-      {/* Panel de información */}
-      <InfoPanel 
-        selectedProduct={selectedProduct}
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-      />
+      {/* Panel de información - Mostrar información AR si está en modo AR */}
+      {!isARMode && (
+        <InfoPanel 
+          selectedProduct={selectedProduct}
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+        />
+      )}
       
-      {/* Controles de vista */}
-      <ViewControls 
-        viewMode={viewMode}
-        onViewModeChange={setViewMode}
-        onScreenshot={handleScreenshot}
-        onFullscreen={handleFullscreen}
-      />
+      {/* Controles de vista - Incluir botón AR */}
+      {!isARMode && !isARDemo && (
+        <ViewControls 
+          viewMode={viewMode}
+          onViewModeChange={setViewMode}
+          onScreenshot={handleScreenshot}
+          onFullscreen={handleFullscreen}
+          onARMode={handleARMode}
+          onARDemo={handleARDemo}
+          showARButton={showARButton}
+        />
+      )}
+
+      {/* Mostrar AR Viewer, Demo AR o Canvas 3D según el modo */}
+      {isARMode ? (
+        // Modo AR Real
+        <ARViewer 
+          selectedProduct={selectedProduct}
+          onExit={handleExitAR}
+        />
+      ) : isARDemo ? (
+        // Modo Demo AR
+        <ARDemo 
+          selectedProduct={selectedProduct}
+          onExit={handleExitARDemo}
+        />
+      ) : (
+        // Modo 3D Normal
+        <>
+          {/* Canvas 3D */}
+          <Canvas
+            ref={canvasRef}
+            camera={{ position: [4, 2, 4], fov: 50 }}
+            style={{ 
+              background: viewMode === 'Presentación' ? 
+                'radial-gradient(circle, #1a1a1a 0%, #000000 100%)' :
+                'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
+              cursor: isFullscreen ? 'none' : 'auto' // Use isFullscreen to remove warning
+            }}
+            shadows
+            gl={{ 
+              antialias: true, 
+              alpha: true,
+              preserveDrawingBuffer: true // Para screenshots
+            }}
+          >
+            <Suspense fallback={null}>
+              <Scene3D 
+                selectedProduct={selectedProduct}
+                showGrid={viewMode !== 'AR Ready'}
+                showEnvironment={viewMode === 'Presentación'}
+                autoRotate={viewMode === 'Presentación'}
+              />
+            </Suspense>
+          </Canvas>
+        </>
+      )}
       
-      {/* Canvas 3D */}
-      <Canvas
-        ref={canvasRef}
-        camera={{ position: [4, 2, 4], fov: 50 }}
-        style={{ 
-          background: viewMode === 'Presentación' ? 
-            'radial-gradient(circle, #1a1a1a 0%, #000000 100%)' :
-            'linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%)',
-          cursor: isFullscreen ? 'none' : 'auto' // Use isFullscreen to remove warning
-        }}
-        shadows
-        gl={{ 
-          antialias: true, 
-          alpha: true,
-          preserveDrawingBuffer: true // Para screenshots
-        }}
-      >
-        <Suspense fallback={null}>
-          <Scene3D 
-            selectedProduct={selectedProduct}
-            showGrid={viewMode !== 'AR Ready'}
-            showEnvironment={viewMode === 'Presentación'}
-            autoRotate={viewMode === 'Presentación'}
-          />
-        </Suspense>
-      </Canvas>
-      
-      {/* Atajos de teclado */}
-      <div style={{
-        position: 'absolute',
-        bottom: '20px',
-        left: '20px',
-        background: 'rgba(0,0,0,0.7)',
-        color: 'white',
-        padding: '10px',
-        borderRadius: '8px',
-        fontSize: '11px',
-        fontFamily: 'monospace',
-        opacity: 0.7
-      }}>
-        <div>⌨️ <strong>Atajos:</strong></div>
-        <div>1-5: Seleccionar producto</div>
-        <div>F: Pantalla completa</div>
-        <div>S: Capturar pantalla</div>
-      </div>
+      {/* Atajos de teclado - Solo en modo 3D */}
+      {!isARMode && !isARDemo && (
+        <div style={{
+          position: 'absolute',
+          bottom: '20px',
+          left: '20px',
+          background: 'rgba(0,0,0,0.7)',
+          color: 'white',
+          padding: '10px',
+          borderRadius: '8px',
+          fontSize: '11px',
+          fontFamily: 'monospace',
+          opacity: 0.7
+        }}>
+          <div>⌨️ <strong>Atajos:</strong></div>
+          <div>1-5: Seleccionar producto</div>
+          <div>F: Pantalla completa</div>
+          <div>S: Capturar pantalla</div>
+          <div>🎭: Demo AR (cualquier dispositivo)</div>
+          {showARButton && <div>🥽: AR Real (móvil HTTPS)</div>}
+        </div>
+      )}
       
       {/* Marca de agua */}
       <div style={{
@@ -425,7 +541,11 @@ export default function ProductViewer() {
         fontSize: '12px',
         fontFamily: 'Arial, sans-serif'
       }}>
-        LG AR Product Viewer v1.0
+        LG AR Product Viewer v1.0 {
+          isARMode ? '(AR Real)' : 
+          isARDemo ? '(Demo AR)' : 
+          ''
+        }
       </div>
     </div>
   )
